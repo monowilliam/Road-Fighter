@@ -1,5 +1,6 @@
 import tkinter
-from tkinter import ttk
+from tkinter import messagebox
+
 
 v1 = tkinter.Tk()
 v1.title("Road Fighter - WILLIAM AGUIRRE ZAPATA - WTechnology.co")
@@ -12,6 +13,13 @@ i = 0
 j = 0
 i1 = 0
 j1 = 0
+
+
+def manual():
+    messagebox.showinfo("Instrucciones de Juego","                         Aprende a jugar ROAD FIGHTER \n \n Selecciona cualquier NIVEL para Un solo jugador o Multijugador \n \n Los controles para el JUGADOR 1: \n Tecla A = carro se mueve a la izquierda \n Tecla D = carro se mueve a la derecha \n \n Los controles para el JUGADOR 2: \n Tecla J = carro se mueve a la izquierda \n Tecla L = carro se mueve a la derecha \n \n La idea del juego es llegar a la meta antes de que se acabe la gasolina esquivando el tráfico y dificultades de la carretera \n \n                                      ¡MUCHA SUERTE! " )
+
+def salida():
+    pass
 
 
 #----------------TECLAS NIVEL1-----------
@@ -539,6 +547,9 @@ Btnivel1Multi2 = tkinter.Button(v1, text="Nivel 2", command=ventanaNivel1Multi).
 Btnivel1Multi3 = tkinter.Button(v1, text="Nivel 3", command=ventanaNivel1Multi).place(x=680,y=250)
 Btnivel1Multi4 = tkinter.Button(v1, text="Nivel 4", command=ventanaNivel1Multi).place(x=680,y=300)
 Btnivel1Multi5 = tkinter.Button(v1, text="Nivel 5", command=ventanaNivel1Multi).place(x=680,y=350)
+
+BtNavegador = tkinter.Button(v1, text="Manual de Usuario", command=manual).place(x=150,y=430)
+BtNavegador = tkinter.Button(v1, text="Instrucciones de Juego", command=manual).place(x=500,y=430)
 
 
 
