@@ -39,6 +39,13 @@ aaa=0
 bbb=0
 ccc=0
 ddd=0
+contvelocidad=0
+contvelocidad2=0
+
+mermar=10 #La velocidad que merma con forme se mueve la representacion de la meta 
+aumentar=-0.03 #La velocidad que avanza con forme se mueve la representacion de la meta 
+gan=aumentar 
+gan2=aumentar
 
 Texto1="                         Aprende a jugar ROAD FIGHTER \n \n Selecciona cualquier NIVEL de dificultad \n \n Los controles para el JUGADOR 1: \n Tecla A = carro se mueve a la izquierda \n Tecla D = carro se mueve a la derecha \n \n Los controles para el JUGADOR 2: \n Tecla J = carro se mueve a la izquierda \n Tecla L = carro se mueve a la derecha \n \n Para Guardar el juego con la tecla SPACE \n \n Para cerrar presionar la tecla ESC \n \n La idea del juego es llegar a la meta antes de que se acabe la gasolina esquivando el tráfico y dificultades de la carretera \n \n                                      ¡MUCHA SUERTE! " 
 
@@ -62,6 +69,8 @@ gasolina=tkinter.PhotoImage(file="img\gasolina.png")
 barra=tkinter.PhotoImage(file="barra.png")
 ganador01=tkinter.PhotoImage(file="img\ganador1.png")
 ganador02=tkinter.PhotoImage(file="img\ganador2.png")
+meta1=tkinter.PhotoImage(file="img\metacar1.png")
+meta2=tkinter.PhotoImage(file="img\metacar2.png")
 
 #-------------------CARGAR IMAGENES-----------------------------------------
 photo = tkinter.Label(v1,image=fondo1, width=800, height=460).place(x=0,y=0)
@@ -75,9 +84,94 @@ NomJugador1=tkinter.Entry(v1,bd=4,fg="white",bg="black",textvariable=jugador1).p
 jugador2=tkinter.StringVar()
 NomJugador2=tkinter.Entry(v1,bd=4,fg="white",bg="black",textvariable=jugador2).place(x=200,y=375)
 
+velocidad=tkinter.StringVar()
+velocidad22=tkinter.StringVar()
 
+#---------------Velocidades de NIVEL 1-------------
+velocidadMapa1=2
+velocidadMini1=3
+velocidadHueco1=2
+velocidadFighter1=1    
+anguloFighter1=0.5
+velocidadVida1=3
+velocidadRunner1=3
+#---------------Velocidades de NIVEL 2-------------
+velocidadMapa2=2.5
+velocidadMini2=3.5
+velocidadHueco2=2.5
+velocidadFighter2=1    
+anguloFighter2=0.5
+velocidadVida2=3.5
+velocidadRunner2=3.5
+#---------------Velocidades de NIVEL 3-------------
+velocidadMapa3=3
+velocidadMini3=4
+velocidadHueco3=3
+velocidadFighter3=3    
+anguloFighter3=1.5
+velocidadVida3=4
+velocidadRunner3=4
+#---------------Velocidades de NIVEL 4-------------
+velocidadMapa4=3.5
+velocidadMini4=4.5
+velocidadHueco4=3.5
+velocidadFighter4=3.5    
+anguloFighter4=2
+velocidadVida4=4.5
+velocidadRunner4=4.5
+#---------------Velocidades de NIVEL 5-------------
+velocidadMapa5=4.5
+velocidadMini5=5.5
+velocidadHueco5=4.5
+velocidadFighter5=3  
+anguloFighter5=1
+velocidadVida5=5.5
+velocidadRunner5=5.5
 
 #-----------------------------FUNCIONES-------------------------------------
+
+def velocidad1():
+    """
+    Descripción: Funcion que aumenta hasta 200 kilometros y merma si se estrella el jugador 1
+    """
+    global contvelocidad,velocidad
+    if(contvelocidad>=0 and contvelocidad<=200):
+        velocidad.set(str(contvelocidad)+" "+"km/h")
+        contvelocidad=contvelocidad+1
+    canvas1.after(100,velocidad1)
+    
+def velocidad2():
+    """
+    Descripcion: Funcion que aumenta hasta 200 kilometros y merma si se estrella el jugador 2
+    """
+    global contvelocidad2,velocidad22
+    if(contvelocidad2>=0 and contvelocidad2<=200):
+        velocidad22.set(str(contvelocidad2)+" "+"km/h")
+        contvelocidad2=contvelocidad2+1
+    canvas1.after(100,velocidad2)
+    
+def gana1():
+    """
+    Descripción: Funcion que mueve el carro conforme a va llegando a su meta del jugador1
+    """
+    global gan
+    i=0
+    if(i<5):
+        canvas1.move(metagana1,0,gan)
+        i=i+1
+        v3.after(10,gana1)
+
+def gana2():
+    """
+    Descripción: Funcion que mueve el carro conforme a va llegando a su meta del jugador2
+    """
+    global gan2
+    i=0
+    if(i<5):
+        canvas1.move(metagana2,0,gan2)
+        i=i+1
+        v3.after(10,gana2)
+
 
 def manual():
     """
@@ -91,17 +185,18 @@ def movMinivan():
     """
     Descripción: Función que llama un carro MiniVan el cual solo se mueve en eje y y aparece aleatoriamente desde la parte de arriba y desaparece en la parte de abajo.
     """
-    global x,contbarra,cMini1
+    global x,contbarra,cMini1,contvelocidad,gan,mermar,aumentar
     contadormini1=0
     aleatorio=random.randint(aaa,bbb)
     
     if(c<30):
         canvas1.move(minivan1,0,velocidadMini)
         cMini1 = cMini1 + 1
+        gan=aumentar
     if(canvas1.coords(minivan1)[1]>=500):
         cMini1=0
         canvas1.move(minivan1,aleatorio-canvas1.coords(minivan1)[0],-canvas1.coords(minivan1)[1])  
-    
+        gan=aumentar
     if(contadormini1<250):
         
         contadormini1 = contadormini1 + 1
@@ -117,18 +212,19 @@ def movMinivan():
             canvas1.delete(l)
             mermarGasolina1()
             contbarra=contbarra-1
+            contvelocidad=0
             canvas1.move(minivan1,aleatorio-canvas1.coords(minivan1)[0],-canvas1.coords(z)[1])
             v3.after(10,movMinivan)
-            
+            gan=mermar
         else:
             v3.after(10,movMinivan)
-
+            gan=aumentar
 
 def movHueco():
     """
     Descripción: Función que llama un hueco en la Carretera el cual solo se mueve en eje y del jugador 1 y aparece aleatoriamente desde la parte de arriba y desaparece en la parte de abajo.
     """
-    global x,contbarra,cHueco,contadorhueco1
+    global x,contbarra,cHueco,contadorhueco1,contvelocidad,gan,mermar,aumentar
     
     cHueco=0
     contadorhueco1=0
@@ -137,8 +233,10 @@ def movHueco():
     if(cHueco<30):
         canvas1.move(hueco1,0,velocidadHueco)
         cHueco = cHueco + 1
+        gan=aumentar
     if(canvas1.coords(hueco1)[1]>=500):
         cHueco=0
+        gan=aumentar
         canvas1.move(hueco1,aleatorio-canvas1.coords(hueco1)[0],-canvas1.coords(hueco1)[1])  
     
     if(contadorhueco1<250):
@@ -156,31 +254,35 @@ def movHueco():
             canvas1.delete(l)
             mermarGasolina1()
             contbarra=contbarra-1
+            contvelocidad=0
             canvas1.move(hueco1,aleatorio-canvas1.coords(hueco1)[0],-canvas1.coords(z)[1])
             v3.after(10,movHueco)
-            
+            gan=mermar
         else:
             v3.after(10,movHueco)
-
+            gan=aumentar
 
 def movFighter():
     """
     Descripción: Función que llama un carro Fighter el cual solo se mueve en eje y con forme en la posicion del eje x del jugador 1 y aparece aleatoriamente desde la parte de arriba y desaparece en la parte de abajo.
     """    
-    global contadorFighter,x,contbarra
+    global contadorFighter,x,contbarra,contvelocidad,gan,mermar,aumentar
     
     contadorFighter=0
     aleatoriofighter=random.randint(aaa,bbb)
     
     if(canvas1.coords(x)[0]<canvas1.coords(fight)[0]):
         canvas1.move(fight,-anguloFighter,velocidadFighter)
+        gan=aumentar
     elif(canvas1.coords(x)[0]>canvas1.coords(fight)[0]):
         canvas1.move(fight,anguloFighter,velocidadFighter)
+        gan=aumentar
     else:
         canvas1.move(fight,0,velocidadFighter)
+        gan=aumentar
     if(canvas1.coords(x)[1]==canvas1.coords(fight)[1]):
         canvas1.move(fight,aleatoriofighter-canvas1.coords(fight)[0],-canvas1.coords(fight)[1])
-                
+        gan=aumentar        
     if(contadorFighter<250):
         
         contadorFighter = contadorFighter + 1
@@ -196,18 +298,19 @@ def movFighter():
             canvas1.delete(l)
             mermarGasolina1()
             contbarra=contbarra-1
+            contvelocidad=0
             canvas1.move(fight,aleatoriofighter-canvas1.coords(fight)[0],-canvas1.coords(fight)[1])
             v3.after(10,movFighter)
             canvas1.move(y,0,-canvas1.coords(y)[1])
+            gan=mermar
         else:
             contadorFighter=0
             v3.after(10,movFighter)
-
-
+            gan=mermar
 
 def carroVida():
     
-    global x,contbarra,cVida,contadorvida
+    global x,contbarra,cVida,contadorvida,gan,mermar,aumentar
     
     cVida=0
     contadorvida=0
@@ -216,11 +319,12 @@ def carroVida():
     if(cVida<30):
         canvas1.move(vida1,0,velocidadVida)
         cVida = cVida + 1
+        gan=aumentar
         
     if(canvas1.coords(vida1)[1]>=1000):
         cVida=0
         canvas1.move(vida1,aleatorio-canvas1.coords(vida1)[0],-canvas1.coords(vida1)[1])
-
+        gan=aumentar
     if(contadorvida<250):
         
         contadorvida = contadorvida + 1
@@ -234,32 +338,25 @@ def carroVida():
             if(contbarra<6):
                 aumentoGasolina1()
                 contbarra=contbarra+1
+                gan=aumentar
             canvas1.move(vida1,aleatorio-canvas1.coords(vida1)[0],-canvas1.coords(z)[1])
             v3.after(10,carroVida)
-            
+            gan=aumentar
         else:
             v3.after(10,carroVida)
-
-
-
+            gan=aumentar
 
 def movRunner():
     pass
 
-
-
-
-
-#-------------------------------------------------------
-
-
+#--------------------------------------------------------
 #------------------ENEMIGOS JUGADOR 2--------------------
 
 def movMinivan2():
     """
     Descripción: Función que llama un hueco en la Carretera el cual solo se mueve en eje y del jugador 2 y aparece aleatoriamente desde la parte de arriba y desaparece en la parte de abajo.
     """
-    global z,contbarra2,cMini2
+    global z,contbarra2,cMini2,contvelocidad2,gan2,mermar,aumentar
     cMini2=0
     contadormini2=0
     aleatorio=random.randint(ccc,ddd)
@@ -267,8 +364,10 @@ def movMinivan2():
     if(cMini2<30):
         canvas1.move(minivan2,0,velocidadMini)
         cMini2 = cMini2 + 1
+        gan2=aumentar
     if(canvas1.coords(minivan2)[1]>=500):
         cMini2=0
+        gan2=aumentar
         canvas1.move(minivan2,aleatorio-canvas1.coords(minivan2)[0],-canvas1.coords(minivan2)[1])  
     
     if(contadormini2<250):
@@ -286,17 +385,17 @@ def movMinivan2():
             canvas1.delete(l)
             mermarGasolina2()
             contbarra2=contbarra2-1
+            contvelocidad2=0
+            gan2=mermar
             canvas1.move(minivan2,aleatorio-canvas1.coords(minivan2)[0],-canvas1.coords(z)[1])
             v3.after(10,movMinivan2)
             
         else:
             v3.after(10,movMinivan2)
-
-
-
+            gan2=aumentar
 
 def carroVida2():
-    global z,contbarra2,cVida2,contadorvida2
+    global z,contbarra2,cVida2,contadorvida2,gan2,mermar,aumentar
     
     cVida2=0
     contadorvida2=0
@@ -305,9 +404,11 @@ def carroVida2():
     if(cVida2<30):
         canvas1.move(vida2,0,velocidadVida)
         cVida2 = cVida2 + 1
+        gan2=aumentar
         
     if(canvas1.coords(vida2)[1]>=1000):
         cVida2=0
+        gan2=aumentar
         canvas1.move(vida2,aleatorio-canvas1.coords(vida2)[0],-canvas1.coords(vida2)[1])
 
     if(contadorvida2<250):
@@ -325,13 +426,15 @@ def carroVida2():
                 contbarra2=contbarra2+1
             canvas1.move(vida2,aleatorio-canvas1.coords(vida2)[0],-canvas1.coords(z)[1])
             v3.after(10,carroVida2)
+            gan2=aumentar
             
         else:
             v3.after(10,carroVida2)
+            gan2=aumentar
 
 
 def movHueco2():
-    global z,contbarra2,cHueco2,contadorhueco2
+    global z,contbarra2,cHueco2,contadorhueco2,contvelocidad2,gan2,mermar,aumentar
     
     cHueco2=0
     contadorhueco2=0
@@ -340,8 +443,10 @@ def movHueco2():
     if(cHueco2<30):
         canvas1.move(hueco2,0,velocidadHueco)
         cHueco2 = cHueco2 + 1
+        gan2=aumentar
     if(canvas1.coords(hueco2)[1]>=500):
         cHueco2=0
+        gan2=aumentar
         canvas1.move(hueco2,aleatorio-canvas1.coords(hueco2)[0],-canvas1.coords(hueco2)[1])  
     
     if(contadorhueco2<250):
@@ -359,29 +464,34 @@ def movHueco2():
             canvas1.delete(l)
             mermarGasolina2()
             contbarra2=contbarra2-1
+            contvelocidad2=0
+            gan2=mermar
             canvas1.move(hueco2,aleatorio-canvas1.coords(hueco2)[0],-canvas1.coords(z)[1])
             v3.after(10,movHueco2)
             
         else:
             v3.after(10,movHueco2)
-
+            gan2=aumentar
 
 def movFighter2():
     
-    global contadorFighter2,z,contbarra2
+    global contadorFighter2,z,contbarra2,contvelocidad2,gan2,mermar,aumentar
     
     contadorFighter2=0
     aleatoriofighter=random.randint(ccc,ddd)
     
     if(canvas1.coords(z)[0]<canvas1.coords(fight2)[0]):
         canvas1.move(fight2,-anguloFighter,velocidadFighter)
+        gan2=aumentar
     elif(canvas1.coords(z)[0]>canvas1.coords(fight2)[0]):
         canvas1.move(fight2,anguloFighter,velocidadFighter)
+        gan2=aumentar
     else:
         canvas1.move(fight2,0,velocidadFighter)
+        gan2=aumentar
     if(canvas1.coords(z)[1]==canvas1.coords(fight2)[1]):
         canvas1.move(fight2,aleatoriofighter-canvas1.coords(fight2)[0],-canvas1.coords(fight2)[1])
-                
+        gan2=aumentar        
     if(contadorFighter2<250):
         
         contadorFighter2 = contadorFighter2 + 1
@@ -397,15 +507,21 @@ def movFighter2():
             canvas1.delete(l)
             mermarGasolina2()
             contbarra2=contbarra2-1
+            contvelocidad2=0
             canvas1.move(fight2,aleatoriofighter-canvas1.coords(fight2)[0],-canvas1.coords(fight2)[1])
             v3.after(10,movFighter2)
             canvas1.move(y1,0,-canvas1.coords(y1)[1])
+            gan2=mermar
         else:
             contadorFighter2=0
             v3.after(10,movFighter2)
+            gan2=aumentar
 
 
 #----------------MERMAR GASOLINA---------------------------
+
+
+
 
 def mermarGasolina1():
     global contbarra
@@ -477,12 +593,19 @@ def aumentoGasolina2():
 
 
 #------------MENSAJE DE GAME OVER Y GANADOR------------
+def ganadorPrimero():
+    global metagana1
+    if(canvas1.coords(metagana1)[1]==20):
+        gameOver2()
+        print("Ganador1")
+    if(canvas1.coords(metagana2)[1]==20):
+        gameOver1()
+        print("Ganador2")
+
 
 def gameOver1():
     ganador1=canvas1.create_image(440,212.5, image=ganador01)
-
-
-        
+    
     
 def gameOver2():
     ganador2=canvas1.create_image(440,212.5, image=ganador02)
@@ -495,14 +618,6 @@ def cerrar():
     v3.destroy()
     v1.destroy()
     
-    
-    
-
-
-
-
-
-
 #----------------TECLAS NIVEL1 ---------------
 h = [] 
 def keyup(e):
@@ -580,8 +695,6 @@ def movFondo1Multi1():
         canvas1.move(y,0,-canvas1.coords(y)[1])
     v3.after(10,movFondo1Multi1)
 
-
-
 def movFondo1Multi2():
     """
     """
@@ -600,7 +713,7 @@ def movFondo1Multi2():
 
 
 def ventanaNivel1Multi():
-    global aaa,bbb,ccc,ddd,velocidadMapa,velocidadMini,velocidadHueco,velocidadFighter,anguloFighter,velocidadVida,velocidadRunner,x,y,canvas1,v3,z,y1,fight,fight2,minivan1,minivan2,runner1,runner2,hueco1,hueco2,vida1,vida2,barra11,barra12,barra13,barra14,barra15,barra16,barra21,barra22,barra23,barra24,barra25,barra26
+    global velocidadMapa1,velocidadMini1,velocidadHueco1,anguloFighter1,velocidadFighter1,velocidadRunner1,velocidadVida1,aaa,bbb,metagana1,metagana2,ccc,ddd,velocidadMapa,velocidadMini,velocidadHueco,velocidadFighter,anguloFighter,velocidadVida,velocidadRunner,x,y,canvas1,v3,z,y1,fight,fight2,minivan1,minivan2,runner1,runner2,hueco1,hueco2,vida1,vida2,barra11,barra12,barra13,barra14,barra15,barra16,barra21,barra22,barra23,barra24,barra25,barra26
     
     v3 =tkinter.Toplevel(v1)
     canvas1 = tkinter.Canvas(v3, width=1025, height=425)#Crea Widgets
@@ -619,8 +732,14 @@ def ventanaNivel1Multi():
     y1 = canvas1.create_image(615, -2100, image=fondoMov) #FONDO EN MOVIMIENTO JUGADOR1
     Gasolina=canvas1.create_image(790,120, image=gasolina) #GASOLINA DE LA PANTALLA
 
-
     #----Variables de velocidad, etc...-----------
+    velocidadMapa=velocidadMapa1
+    velocidadMini=velocidadMini1
+    velocidadHueco=velocidadHueco1
+    velocidadFighter=velocidadFighter1  
+    anguloFighter=anguloFighter1
+    velocidadVida=velocidadVida1
+    velocidadRunner=velocidadRunner1 
     
     aaa=240 #Variables del rango de la carretera en x Jugador 1
     bbb=380 #Variables del rango de la carretera en x Jugador 1
@@ -628,25 +747,8 @@ def ventanaNivel1Multi():
     ccc=510 #Variables del rango de la carretera en x Jugador 2
     ddd=655 #Variables del rango de la carretera en x Jugador 2
     
-    velocidadMapa=2
+    #---------------Velocidades de NIVEL 1-------------
     
-    velocidadMini=3
-    
-    velocidadHueco=velocidadMapa
-    
-    velocidadFighter=2
-    
-    anguloFighter=0.5
-    
-    velocidadVida=3
-
-    velocidadRunner=3
-
-
-
-
-
-
     #-----VIDA EN BARRA DEL JUGADOR 1------------------
     barra11=canvas1.create_image(830,75, image=barra)
     barra12=canvas1.create_image(830,90, image=barra)
@@ -662,22 +764,29 @@ def ventanaNivel1Multi():
     barra24=canvas1.create_image(950,120, image=barra)
     barra25=canvas1.create_image(950,135, image=barra)
     barra26=canvas1.create_image(950,150, image=barra)
-    
 
-    
-    
+    #--------GANADOR META--------------
+    metagana1=canvas1.create_image(65,350, image=meta1)
+    metagana2=canvas1.create_image(90,350, image=meta2)
+
+    NumVelocidad=tkinter.Label(v3,textvariable=velocidad,fg="white",bg="black",font=("",16,"bold")).place(x=790,y=170)
+    NumVelocidad2=tkinter.Label(v3,textvariable=velocidad22,fg="white",bg="black",font=("",16,"bold")).place(x=900,y=170)
+
     TextoJugador1=tkinter.Label(v3,text=jugador1.get(),fg="white",bg="black",font=("Arial",13)).place(x=130,y=10)
     TextoJugador2=tkinter.Label(v3,text=jugador2.get(),fg="white",bg="black",font=("Arial",13)).place(x=405,y=10)
 
     Jugador1=tkinter.Label(v3,text=jugador1.get(),fg="white",bg="black",font=("Arial",13)).place(x=790,y=10)
     Jugador2=tkinter.Label(v3,text=jugador2.get(),fg="white",bg="black",font=("Arial",13)).place(x=900,y=10)
 
-
     movFondo1Multi1()
     movFondo1Multi2()
-
+    velocidad1()
+    velocidad2()
+    gana1()
+    gana2()
+    ganadorPrimero()
+  
     #----------ENEMIGOS DEL JUGADOR 1---------------------
-    
     minivan1 = canvas1.create_image(posxal,-100,image=minivan)
     vida1 = canvas1.create_image(posxal,-1000,image=vida)
     runner1 = canvas1.create_image(posxal,-150,image=runner)
@@ -685,7 +794,6 @@ def ventanaNivel1Multi():
     hueco1= canvas1.create_image(posxal,-300,image=hueco)
 
     #----------ENEMIGOS DEL JUGADOR 1---------------------
-    
     minivan2 = canvas1.create_image(posxal2,-100,image=minivan)
     vida2 = canvas1.create_image(posxal2,-1000,image=vida)
     runner2 = canvas1.create_image(posxal2,-150,image=runner)
@@ -693,7 +801,6 @@ def ventanaNivel1Multi():
     hueco2= canvas1.create_image(posxal2,-300,image=hueco)
     
     #----------PONER A CORRER LOS ENEMIGOS DEL JUGADOR 1------------
-    
     movMinivan()
     #movRunner()
     movFighter()
@@ -701,7 +808,6 @@ def ventanaNivel1Multi():
     movHueco()
 
     #---------PONER A CORRER LOS ENEMIGOS DEL JUGADOR 2------------
-
     movMinivan2()
     #movRunner2()
     movFighter2()
@@ -714,11 +820,12 @@ def ventanaNivel1Multi():
 
 
 def ventanaNivel2Multi():
-    global aaa,bbb,ccc,ddd,velocidadMapa,velocidadMini,velocidadHueco,velocidadFighter,anguloFighter,velocidadVida,velocidadRunner,x,y,canvas1,v3,z,y1,fight,fight2,minivan1,minivan2,runner1,runner2,hueco1,hueco2,vida1,vida2,barra11,barra12,barra13,barra14,barra15,barra16,barra21,barra22,barra23,barra24,barra25,barra26
+    global velocidadMapa2,velocidadMini2,velocidadHueco2,anguloFighter2,velocidadFighter2,velocidadRunner2,velocidadVida2,aaa,bbb,metagana1,metagana2,ccc,ddd,velocidadMapa,velocidadMini,velocidadHueco,velocidadFighter,anguloFighter,velocidadVida,velocidadRunner,x,y,canvas1,v3,z,y1,fight,fight2,minivan1,minivan2,runner1,runner2,hueco1,hueco2,vida1,vida2,barra11,barra12,barra13,barra14,barra15,barra16,barra21,barra22,barra23,barra24,barra25,barra26
     
     v3 =tkinter.Toplevel(v1)
     canvas1 = tkinter.Canvas(v3, width=1025, height=425)#Crea Widgets
     v3.title("Nivel 2 Road Fighter") 
+
     canvas1.focus_set()# Pone el foco en el canvas
     canvas1.pack()#Empaqueta el canvas
     keyJuego()
@@ -732,8 +839,14 @@ def ventanaNivel2Multi():
     y1 = canvas1.create_image(615, -2100, image=fondoMov) #FONDO EN MOVIMIENTO JUGADOR1
     Gasolina=canvas1.create_image(790,120, image=gasolina) #GASOLINA DE LA PANTALLA
 
-
     #----Variables de velocidad, etc...-----------
+    velocidadMapa=velocidadMapa2
+    velocidadMini=velocidadMini2
+    velocidadHueco=velocidadHueco2
+    velocidadFighter=velocidadFighter2  
+    anguloFighter=anguloFighter2
+    velocidadVida=velocidadVida2
+    velocidadRunner=velocidadRunner2
     
     aaa=240 #Variables del rango de la carretera en x Jugador 1
     bbb=380 #Variables del rango de la carretera en x Jugador 1
@@ -741,27 +854,8 @@ def ventanaNivel2Multi():
     ccc=510 #Variables del rango de la carretera en x Jugador 2
     ddd=655 #Variables del rango de la carretera en x Jugador 2
     
-    velocidadMapa=2.5
+    #---------------Velocidades de NIVEL 1-------------
     
-    velocidadMini=3.5
-    
-    velocidadHueco=velocidadMapa
-    
-    velocidadFighter=2.5
-    
-    anguloFighter=1
-    
-    velocidadVida=3.5
-
-    velocidadRunner=3.5
-
-
-
-
-
-
-
-
     #-----VIDA EN BARRA DEL JUGADOR 1------------------
     barra11=canvas1.create_image(830,75, image=barra)
     barra12=canvas1.create_image(830,90, image=barra)
@@ -777,22 +871,29 @@ def ventanaNivel2Multi():
     barra24=canvas1.create_image(950,120, image=barra)
     barra25=canvas1.create_image(950,135, image=barra)
     barra26=canvas1.create_image(950,150, image=barra)
-    
 
-    
-    
-    TextoJugador1=tkinter.Label(v3,text=jugador1.get(),font=("Arial",13)).place(x=130,y=10)
-    TextoJugador2=tkinter.Label(v3,text=jugador2.get(),font=("Arial",13)).place(x=405,y=10)
+    #--------GANADOR META--------------
+    metagana1=canvas1.create_image(65,350, image=meta1)
+    metagana2=canvas1.create_image(90,350, image=meta2)
 
-    Jugador1=tkinter.Label(v3,text=jugador1.get(),font=("Arial",13)).place(x=790,y=10)
-    Jugador2=tkinter.Label(v3,text=jugador2.get(),font=("Arial",13)).place(x=900,y=10)
+    NumVelocidad=tkinter.Label(v3,textvariable=velocidad,fg="white",bg="black",font=("",16,"bold")).place(x=790,y=170)
+    NumVelocidad2=tkinter.Label(v3,textvariable=velocidad22,fg="white",bg="black",font=("",16,"bold")).place(x=900,y=170)
 
+    TextoJugador1=tkinter.Label(v3,text=jugador1.get(),fg="white",bg="black",font=("Arial",13)).place(x=130,y=10)
+    TextoJugador2=tkinter.Label(v3,text=jugador2.get(),fg="white",bg="black",font=("Arial",13)).place(x=405,y=10)
+
+    Jugador1=tkinter.Label(v3,text=jugador1.get(),fg="white",bg="black",font=("Arial",13)).place(x=790,y=10)
+    Jugador2=tkinter.Label(v3,text=jugador2.get(),fg="white",bg="black",font=("Arial",13)).place(x=900,y=10)
 
     movFondo1Multi1()
     movFondo1Multi2()
-
+    velocidad1()
+    velocidad2()
+    gana1()
+    gana2()
+    ganadorPrimero()
+  
     #----------ENEMIGOS DEL JUGADOR 1---------------------
-    
     minivan1 = canvas1.create_image(posxal,-100,image=minivan)
     vida1 = canvas1.create_image(posxal,-1000,image=vida)
     runner1 = canvas1.create_image(posxal,-150,image=runner)
@@ -800,7 +901,6 @@ def ventanaNivel2Multi():
     hueco1= canvas1.create_image(posxal,-300,image=hueco)
 
     #----------ENEMIGOS DEL JUGADOR 1---------------------
-    
     minivan2 = canvas1.create_image(posxal2,-100,image=minivan)
     vida2 = canvas1.create_image(posxal2,-1000,image=vida)
     runner2 = canvas1.create_image(posxal2,-150,image=runner)
@@ -808,7 +908,6 @@ def ventanaNivel2Multi():
     hueco2= canvas1.create_image(posxal2,-300,image=hueco)
     
     #----------PONER A CORRER LOS ENEMIGOS DEL JUGADOR 1------------
-    
     movMinivan()
     #movRunner()
     movFighter()
@@ -816,7 +915,6 @@ def ventanaNivel2Multi():
     movHueco()
 
     #---------PONER A CORRER LOS ENEMIGOS DEL JUGADOR 2------------
-
     movMinivan2()
     #movRunner2()
     movFighter2()
@@ -826,18 +924,13 @@ def ventanaNivel2Multi():
     
     v1.iconify()
 
-    
-
-
-
-
-
 def ventanaNivel3Multi():
-    global aaa,bbb,ccc,ddd,velocidadMapa,velocidadMini,velocidadHueco,velocidadFighter,anguloFighter,velocidadVida,velocidadRunner,x,y,canvas1,v3,z,y1,fight,fight2,minivan1,minivan2,runner1,runner2,hueco1,hueco2,vida1,vida2,barra11,barra12,barra13,barra14,barra15,barra16,barra21,barra22,barra23,barra24,barra25,barra26
+    global velocidadMapa3,velocidadMini3,velocidadHueco3,anguloFighter3,velocidadFighter3,velocidadRunner3,velocidadVida3,aaa,bbb,metagana1,metagana2,ccc,ddd,velocidadMapa,velocidadMini,velocidadHueco,velocidadFighter,anguloFighter,velocidadVida,velocidadRunner,x,y,canvas1,v3,z,y1,fight,fight2,minivan1,minivan2,runner1,runner2,hueco1,hueco2,vida1,vida2,barra11,barra12,barra13,barra14,barra15,barra16,barra21,barra22,barra23,barra24,barra25,barra26
     
     v3 =tkinter.Toplevel(v1)
     canvas1 = tkinter.Canvas(v3, width=1025, height=425)#Crea Widgets
     v3.title("Nivel 3 Road Fighter") 
+
     canvas1.focus_set()# Pone el foco en el canvas
     canvas1.pack()#Empaqueta el canvas
     keyJuego()
@@ -851,8 +944,14 @@ def ventanaNivel3Multi():
     y1 = canvas1.create_image(615, -2100, image=fondoMov) #FONDO EN MOVIMIENTO JUGADOR1
     Gasolina=canvas1.create_image(790,120, image=gasolina) #GASOLINA DE LA PANTALLA
 
-
     #----Variables de velocidad, etc...-----------
+    velocidadMapa=velocidadMapa3
+    velocidadMini=velocidadMini3
+    velocidadHueco=velocidadHueco3
+    velocidadFighter=velocidadFighter3  
+    anguloFighter=anguloFighter3
+    velocidadVida=velocidadVida3
+    velocidadRunner=velocidadRunner3
     
     aaa=240 #Variables del rango de la carretera en x Jugador 1
     bbb=380 #Variables del rango de la carretera en x Jugador 1
@@ -860,28 +959,8 @@ def ventanaNivel3Multi():
     ccc=510 #Variables del rango de la carretera en x Jugador 2
     ddd=655 #Variables del rango de la carretera en x Jugador 2
     
-    velocidadMapa=3
+    #---------------Velocidades de NIVEL 1-------------
     
-    velocidadMini=4
-    
-    velocidadHueco=velocidadMapa
-    
-    velocidadFighter=3
-    
-    anguloFighter=1.5
-    
-    velocidadVida=4
-
-    velocidadRunner=4
-
-
-
-
-
-
-
-
-
     #-----VIDA EN BARRA DEL JUGADOR 1------------------
     barra11=canvas1.create_image(830,75, image=barra)
     barra12=canvas1.create_image(830,90, image=barra)
@@ -897,22 +976,29 @@ def ventanaNivel3Multi():
     barra24=canvas1.create_image(950,120, image=barra)
     barra25=canvas1.create_image(950,135, image=barra)
     barra26=canvas1.create_image(950,150, image=barra)
-    
 
-    
-    
-    TextoJugador1=tkinter.Label(v3,text=jugador1.get(),font=("Arial",13)).place(x=130,y=10)
-    TextoJugador2=tkinter.Label(v3,text=jugador2.get(),font=("Arial",13)).place(x=405,y=10)
+    #--------GANADOR META--------------
+    metagana1=canvas1.create_image(65,350, image=meta1)
+    metagana2=canvas1.create_image(90,350, image=meta2)
 
-    Jugador1=tkinter.Label(v3,text=jugador1.get(),font=("Arial",13)).place(x=790,y=10)
-    Jugador2=tkinter.Label(v3,text=jugador2.get(),font=("Arial",13)).place(x=900,y=10)
+    NumVelocidad=tkinter.Label(v3,textvariable=velocidad,fg="white",bg="black",font=("",16,"bold")).place(x=790,y=170)
+    NumVelocidad2=tkinter.Label(v3,textvariable=velocidad22,fg="white",bg="black",font=("",16,"bold")).place(x=900,y=170)
 
+    TextoJugador1=tkinter.Label(v3,text=jugador1.get(),fg="white",bg="black",font=("Arial",13)).place(x=130,y=10)
+    TextoJugador2=tkinter.Label(v3,text=jugador2.get(),fg="white",bg="black",font=("Arial",13)).place(x=405,y=10)
+
+    Jugador1=tkinter.Label(v3,text=jugador1.get(),fg="white",bg="black",font=("Arial",13)).place(x=790,y=10)
+    Jugador2=tkinter.Label(v3,text=jugador2.get(),fg="white",bg="black",font=("Arial",13)).place(x=900,y=10)
 
     movFondo1Multi1()
     movFondo1Multi2()
-
+    velocidad1()
+    velocidad2()
+    gana1()
+    gana2()
+    ganadorPrimero()
+  
     #----------ENEMIGOS DEL JUGADOR 1---------------------
-    
     minivan1 = canvas1.create_image(posxal,-100,image=minivan)
     vida1 = canvas1.create_image(posxal,-1000,image=vida)
     runner1 = canvas1.create_image(posxal,-150,image=runner)
@@ -920,7 +1006,6 @@ def ventanaNivel3Multi():
     hueco1= canvas1.create_image(posxal,-300,image=hueco)
 
     #----------ENEMIGOS DEL JUGADOR 1---------------------
-    
     minivan2 = canvas1.create_image(posxal2,-100,image=minivan)
     vida2 = canvas1.create_image(posxal2,-1000,image=vida)
     runner2 = canvas1.create_image(posxal2,-150,image=runner)
@@ -928,7 +1013,6 @@ def ventanaNivel3Multi():
     hueco2= canvas1.create_image(posxal2,-300,image=hueco)
     
     #----------PONER A CORRER LOS ENEMIGOS DEL JUGADOR 1------------
-    
     movMinivan()
     #movRunner()
     movFighter()
@@ -936,7 +1020,6 @@ def ventanaNivel3Multi():
     movHueco()
 
     #---------PONER A CORRER LOS ENEMIGOS DEL JUGADOR 2------------
-
     movMinivan2()
     #movRunner2()
     movFighter2()
@@ -947,14 +1030,13 @@ def ventanaNivel3Multi():
     v1.iconify()
 
 
-
-
 def ventanaNivel4Multi():
-    global aaa,bbb,ccc,ddd,velocidadMapa,velocidadMini,velocidadHueco,velocidadFighter,anguloFighter,velocidadVida,velocidadRunner,x,y,canvas1,v3,z,y1,fight,fight2,minivan1,minivan2,runner1,runner2,hueco1,hueco2,vida1,vida2,barra11,barra12,barra13,barra14,barra15,barra16,barra21,barra22,barra23,barra24,barra25,barra26
+    global velocidadMapa4,velocidadMini4,velocidadHueco4,anguloFighter4,velocidadFighter4,velocidadRunner4,velocidadVida4,aaa,bbb,metagana1,metagana2,ccc,ddd,velocidadMapa,velocidadMini,velocidadHueco,velocidadFighter,anguloFighter,velocidadVida,velocidadRunner,x,y,canvas1,v3,z,y1,fight,fight2,minivan1,minivan2,runner1,runner2,hueco1,hueco2,vida1,vida2,barra11,barra12,barra13,barra14,barra15,barra16,barra21,barra22,barra23,barra24,barra25,barra26
     
     v3 =tkinter.Toplevel(v1)
     canvas1 = tkinter.Canvas(v3, width=1025, height=425)#Crea Widgets
     v3.title("Nivel 4 Road Fighter") 
+
     canvas1.focus_set()# Pone el foco en el canvas
     canvas1.pack()#Empaqueta el canvas
     keyJuego()
@@ -968,8 +1050,14 @@ def ventanaNivel4Multi():
     y1 = canvas1.create_image(615, -2100, image=fondoMov) #FONDO EN MOVIMIENTO JUGADOR1
     Gasolina=canvas1.create_image(790,120, image=gasolina) #GASOLINA DE LA PANTALLA
 
-
     #----Variables de velocidad, etc...-----------
+    velocidadMapa=velocidadMapa4
+    velocidadMini=velocidadMini4
+    velocidadHueco=velocidadHueco4
+    velocidadFighter=velocidadFighter4  
+    anguloFighter=anguloFighter4
+    velocidadVida=velocidadVida4
+    velocidadRunner=velocidadRunner4 
     
     aaa=240 #Variables del rango de la carretera en x Jugador 1
     bbb=380 #Variables del rango de la carretera en x Jugador 1
@@ -977,25 +1065,8 @@ def ventanaNivel4Multi():
     ccc=510 #Variables del rango de la carretera en x Jugador 2
     ddd=655 #Variables del rango de la carretera en x Jugador 2
     
-    velocidadMapa=3.5
+    #---------------Velocidades de NIVEL 1-------------
     
-    velocidadMini=4.5
-    
-    velocidadHueco=velocidadMapa
-    
-    velocidadFighter=3.5
-    
-    anguloFighter=2
-    
-    velocidadVida=4.5
-
-    velocidadRunner=4.5
-
-
-
-
-
-
     #-----VIDA EN BARRA DEL JUGADOR 1------------------
     barra11=canvas1.create_image(830,75, image=barra)
     barra12=canvas1.create_image(830,90, image=barra)
@@ -1011,22 +1082,29 @@ def ventanaNivel4Multi():
     barra24=canvas1.create_image(950,120, image=barra)
     barra25=canvas1.create_image(950,135, image=barra)
     barra26=canvas1.create_image(950,150, image=barra)
-    
 
-    
-    
-    TextoJugador1=tkinter.Label(v3,text=jugador1.get(),font=("Arial",13)).place(x=130,y=10)
-    TextoJugador2=tkinter.Label(v3,text=jugador2.get(),font=("Arial",13)).place(x=405,y=10)
+    #--------GANADOR META--------------
+    metagana1=canvas1.create_image(65,350, image=meta1)
+    metagana2=canvas1.create_image(90,350, image=meta2)
 
-    Jugador1=tkinter.Label(v3,text=jugador1.get(),font=("Arial",13)).place(x=790,y=10)
-    Jugador2=tkinter.Label(v3,text=jugador2.get(),font=("Arial",13)).place(x=900,y=10)
+    NumVelocidad=tkinter.Label(v3,textvariable=velocidad,fg="white",bg="black",font=("",16,"bold")).place(x=790,y=170)
+    NumVelocidad2=tkinter.Label(v3,textvariable=velocidad22,fg="white",bg="black",font=("",16,"bold")).place(x=900,y=170)
 
+    TextoJugador1=tkinter.Label(v3,text=jugador1.get(),fg="white",bg="black",font=("Arial",13)).place(x=130,y=10)
+    TextoJugador2=tkinter.Label(v3,text=jugador2.get(),fg="white",bg="black",font=("Arial",13)).place(x=405,y=10)
+
+    Jugador1=tkinter.Label(v3,text=jugador1.get(),fg="white",bg="black",font=("Arial",13)).place(x=790,y=10)
+    Jugador2=tkinter.Label(v3,text=jugador2.get(),fg="white",bg="black",font=("Arial",13)).place(x=900,y=10)
 
     movFondo1Multi1()
     movFondo1Multi2()
-
+    velocidad1()
+    velocidad2()
+    gana1()
+    gana2()
+    ganadorPrimero()
+  
     #----------ENEMIGOS DEL JUGADOR 1---------------------
-    
     minivan1 = canvas1.create_image(posxal,-100,image=minivan)
     vida1 = canvas1.create_image(posxal,-1000,image=vida)
     runner1 = canvas1.create_image(posxal,-150,image=runner)
@@ -1034,7 +1112,6 @@ def ventanaNivel4Multi():
     hueco1= canvas1.create_image(posxal,-300,image=hueco)
 
     #----------ENEMIGOS DEL JUGADOR 1---------------------
-    
     minivan2 = canvas1.create_image(posxal2,-100,image=minivan)
     vida2 = canvas1.create_image(posxal2,-1000,image=vida)
     runner2 = canvas1.create_image(posxal2,-150,image=runner)
@@ -1042,7 +1119,6 @@ def ventanaNivel4Multi():
     hueco2= canvas1.create_image(posxal2,-300,image=hueco)
     
     #----------PONER A CORRER LOS ENEMIGOS DEL JUGADOR 1------------
-    
     movMinivan()
     #movRunner()
     movFighter()
@@ -1050,7 +1126,6 @@ def ventanaNivel4Multi():
     movHueco()
 
     #---------PONER A CORRER LOS ENEMIGOS DEL JUGADOR 2------------
-
     movMinivan2()
     #movRunner2()
     movFighter2()
@@ -1061,14 +1136,13 @@ def ventanaNivel4Multi():
     v1.iconify()
 
 
-
-
 def ventanaNivel5Multi():
-    global aaa,bbb,ccc,ddd,velocidadMapa,velocidadMini,velocidadHueco,velocidadFighter,anguloFighter,velocidadVida,velocidadRunner,x,y,canvas1,v3,z,y1,fight,fight2,minivan1,minivan2,runner1,runner2,hueco1,hueco2,vida1,vida2,barra11,barra12,barra13,barra14,barra15,barra16,barra21,barra22,barra23,barra24,barra25,barra26
+    global velocidadMapa5,velocidadMini5,velocidadHueco5,anguloFighter5,velocidadFighter5,velocidadRunner5,velocidadVida5,aaa,bbb,metagana1,metagana2,ccc,ddd,velocidadMapa,velocidadMini,velocidadHueco,velocidadFighter,anguloFighter,velocidadVida,velocidadRunner,x,y,canvas1,v3,z,y1,fight,fight2,minivan1,minivan2,runner1,runner2,hueco1,hueco2,vida1,vida2,barra11,barra12,barra13,barra14,barra15,barra16,barra21,barra22,barra23,barra24,barra25,barra26
     
     v3 =tkinter.Toplevel(v1)
     canvas1 = tkinter.Canvas(v3, width=1025, height=425)#Crea Widgets
     v3.title("Nivel 5 Road Fighter") 
+
     canvas1.focus_set()# Pone el foco en el canvas
     canvas1.pack()#Empaqueta el canvas
     keyJuego()
@@ -1082,8 +1156,14 @@ def ventanaNivel5Multi():
     y1 = canvas1.create_image(615, -2100, image=fondoMov) #FONDO EN MOVIMIENTO JUGADOR1
     Gasolina=canvas1.create_image(790,120, image=gasolina) #GASOLINA DE LA PANTALLA
 
-
     #----Variables de velocidad, etc...-----------
+    velocidadMapa=velocidadMapa5
+    velocidadMini=velocidadMini5
+    velocidadHueco=velocidadHueco5
+    velocidadFighter=velocidadFighter5  
+    anguloFighter=anguloFighter5
+    velocidadVida=velocidadVida5
+    velocidadRunner=velocidadRunner5
     
     aaa=240 #Variables del rango de la carretera en x Jugador 1
     bbb=380 #Variables del rango de la carretera en x Jugador 1
@@ -1091,29 +1171,8 @@ def ventanaNivel5Multi():
     ccc=510 #Variables del rango de la carretera en x Jugador 2
     ddd=655 #Variables del rango de la carretera en x Jugador 2
     
-    velocidadMapa=4.5
+    #---------------Velocidades de NIVEL 1-------------
     
-    velocidadMini=5.5
-    
-    velocidadHueco=velocidadMapa
-    
-    velocidadFighter=3
-
-    anguloFighter=1
-    
-    velocidadVida=5.5
-
-    velocidadRunner=5.5
-
-
-
-
-
-
-    
-
-
-
     #-----VIDA EN BARRA DEL JUGADOR 1------------------
     barra11=canvas1.create_image(830,75, image=barra)
     barra12=canvas1.create_image(830,90, image=barra)
@@ -1129,22 +1188,29 @@ def ventanaNivel5Multi():
     barra24=canvas1.create_image(950,120, image=barra)
     barra25=canvas1.create_image(950,135, image=barra)
     barra26=canvas1.create_image(950,150, image=barra)
-    
 
-    
-    
-    TextoJugador1=tkinter.Label(v3,text=jugador1.get(),font=("Arial",13)).place(x=130,y=10)
-    TextoJugador2=tkinter.Label(v3,text=jugador2.get(),font=("Arial",13)).place(x=405,y=10)
+    #--------GANADOR META--------------
+    metagana1=canvas1.create_image(65,350, image=meta1)
+    metagana2=canvas1.create_image(90,350, image=meta2)
 
-    Jugador1=tkinter.Label(v3,text=jugador1.get(),font=("Arial",13)).place(x=790,y=10)
-    Jugador2=tkinter.Label(v3,text=jugador2.get(),font=("Arial",13)).place(x=900,y=10)
+    NumVelocidad=tkinter.Label(v3,textvariable=velocidad,fg="white",bg="black",font=("",16,"bold")).place(x=790,y=170)
+    NumVelocidad2=tkinter.Label(v3,textvariable=velocidad22,fg="white",bg="black",font=("",16,"bold")).place(x=900,y=170)
 
+    TextoJugador1=tkinter.Label(v3,text=jugador1.get(),fg="white",bg="black",font=("Arial",13)).place(x=130,y=10)
+    TextoJugador2=tkinter.Label(v3,text=jugador2.get(),fg="white",bg="black",font=("Arial",13)).place(x=405,y=10)
+
+    Jugador1=tkinter.Label(v3,text=jugador1.get(),fg="white",bg="black",font=("Arial",13)).place(x=790,y=10)
+    Jugador2=tkinter.Label(v3,text=jugador2.get(),fg="white",bg="black",font=("Arial",13)).place(x=900,y=10)
 
     movFondo1Multi1()
     movFondo1Multi2()
-
+    velocidad1()
+    velocidad2()
+    gana1()
+    gana2()
+    ganadorPrimero()
+  
     #----------ENEMIGOS DEL JUGADOR 1---------------------
-    
     minivan1 = canvas1.create_image(posxal,-100,image=minivan)
     vida1 = canvas1.create_image(posxal,-1000,image=vida)
     runner1 = canvas1.create_image(posxal,-150,image=runner)
@@ -1152,7 +1218,6 @@ def ventanaNivel5Multi():
     hueco1= canvas1.create_image(posxal,-300,image=hueco)
 
     #----------ENEMIGOS DEL JUGADOR 1---------------------
-    
     minivan2 = canvas1.create_image(posxal2,-100,image=minivan)
     vida2 = canvas1.create_image(posxal2,-1000,image=vida)
     runner2 = canvas1.create_image(posxal2,-150,image=runner)
@@ -1160,7 +1225,6 @@ def ventanaNivel5Multi():
     hueco2= canvas1.create_image(posxal2,-300,image=hueco)
     
     #----------PONER A CORRER LOS ENEMIGOS DEL JUGADOR 1------------
-    
     movMinivan()
     #movRunner()
     movFighter()
@@ -1168,7 +1232,6 @@ def ventanaNivel5Multi():
     movHueco()
 
     #---------PONER A CORRER LOS ENEMIGOS DEL JUGADOR 2------------
-
     movMinivan2()
     #movRunner2()
     movFighter2()
@@ -1177,20 +1240,7 @@ def ventanaNivel5Multi():
 
     
     v1.iconify()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
 
 
 def menuPrincipal():
@@ -1263,11 +1313,11 @@ def cargar():
 
 
 def ventadaGuardar():
-    
-    global aaa,bbb,ccc,ddd,velocidadMapa,velocidadMini,velocidadHueco,velocidadFighter,anguloFighter,velocidadVida,velocidadRunner,x,y,canvas1,v3,z,y1,fight,fight2,minivan1,minivan2,runner1,runner2,hueco1,hueco2,vida1,vida2,barra11,barra12,barra13,barra14,barra15,barra16,barra21,barra22,barra23,barra24,barra25,barra26
+    global velocidadMapa1,velocidadMini1,velocidadHueco1,anguloFighter1,velocidadFighter1,velocidadRunner1,velocidadVida1,aaa,bbb,metagana1,metagana2,ccc,ddd,velocidadMapa,velocidadMini,velocidadHueco,velocidadFighter,anguloFighter,velocidadVida,velocidadRunner,x,y,canvas1,v3,z,y1,fight,fight2,minivan1,minivan2,runner1,runner2,hueco1,hueco2,vida1,vida2,barra11,barra12,barra13,barra14,barra15,barra16,barra21,barra22,barra23,barra24,barra25,barra26
     
     v3 =tkinter.Toplevel(v1)
     canvas1 = tkinter.Canvas(v3, width=1025, height=425)#Crea Widgets
+    v3.title("Nivel 1 Road Fighter") 
 
     canvas1.focus_set()# Pone el foco en el canvas
     canvas1.pack()#Empaqueta el canvas
@@ -1283,7 +1333,17 @@ def ventadaGuardar():
     Gasolina=canvas1.create_image(790,120, image=gasolina) #GASOLINA DE LA PANTALLA
 
 
+    
     #----Variables de velocidad, etc...-----------
+    velocidadMapa=velocidadMapa1
+    velocidadMini=velocidadMini1
+    velocidadHueco=velocidadHueco1
+    velocidadFighter=velocidadFighter1  
+    anguloFighter=anguloFighter1
+    velocidadVida=velocidadVida1
+    velocidadRunner=velocidadRunner1
+
+    
     
     aaa=240 #Variables del rango de la carretera en x Jugador 1
     bbb=380 #Variables del rango de la carretera en x Jugador 1
@@ -1291,37 +1351,17 @@ def ventadaGuardar():
     ccc=510 #Variables del rango de la carretera en x Jugador 2
     ddd=655 #Variables del rango de la carretera en x Jugador 2
     
-    velocidadMapa=2
+    #---------------Velocidades de NIVEL 1-------------
     
-    velocidadMini=3
-    
-    velocidadHueco=velocidadMapa
-    
-    velocidadFighter=2
-    
-    anguloFighter=0.5
-    
-    velocidadVida=3
-
-    velocidadRunner=3
-
-
 
     #-----VIDA EN BARRA DEL JUGADOR 1------------------
+    barra11=canvas1.create_image(830,75, image=barra)
+    barra12=canvas1.create_image(830,90, image=barra)
+    barra13=canvas1.create_image(830,105, image=barra)
+    barra14=canvas1.create_image(830,120, image=barra)
+    barra15=canvas1.create_image(830,135, image=barra)
+    barra16=canvas1.create_image(830,150, image=barra)
     
-    barra16=canvas1.create_image(830,75, image=barra)
-
-    barra15=canvas1.create_image(830,90, image=barra)
-
-    barra14=canvas1.create_image(830,105, image=barra)
-
-    barra13=canvas1.create_image(830,120, image=barra)
-
-    barra12=canvas1.create_image(830,135, image=barra)
-
-    barra11=canvas1.create_image(830,150, image=barra)
-
-        
     #-----VIDA EN BARRA DEL JUGADOR 2------------------
     barra21=canvas1.create_image(950,75, image=barra)
     barra22=canvas1.create_image(950,90, image=barra)
@@ -1329,20 +1369,30 @@ def ventadaGuardar():
     barra24=canvas1.create_image(950,120, image=barra)
     barra25=canvas1.create_image(950,135, image=barra)
     barra26=canvas1.create_image(950,150, image=barra)
-    
+
+    #--------GANADOR META--------------
+    metagana1=canvas1.create_image(65,350, image=meta1)
+    metagana2=canvas1.create_image(90,350, image=meta2)
+
+    NumVelocidad=tkinter.Label(v3,textvariable=velocidad,fg="white",bg="black",font=("",16,"bold")).place(x=790,y=170)
+    NumVelocidad2=tkinter.Label(v3,textvariable=velocidad22,fg="white",bg="black",font=("",16,"bold")).place(x=900,y=170)
 
     
-    
-    TextoJugador1=tkinter.Label(v3,text=jugador1.get(),font=("Arial",13)).place(x=130,y=10)
-    TextoJugador2=tkinter.Label(v3,text=jugador2.get(),font=("Arial",13)).place(x=405,y=10)
+    TextoJugador1=tkinter.Label(v3,text=jugador1.get(),fg="white",bg="black",font=("Arial",13)).place(x=130,y=10)
+    TextoJugador2=tkinter.Label(v3,text=jugador2.get(),fg="white",bg="black",font=("Arial",13)).place(x=405,y=10)
 
-    Jugador1=tkinter.Label(v3,text=jugador1.get(),font=("Arial",13)).place(x=790,y=10)
-    Jugador2=tkinter.Label(v3,text=jugador2.get(),font=("Arial",13)).place(x=900,y=10)
+    Jugador1=tkinter.Label(v3,text=jugador1.get(),fg="white",bg="black",font=("Arial",13)).place(x=790,y=10)
+    Jugador2=tkinter.Label(v3,text=jugador2.get(),fg="white",bg="black",font=("Arial",13)).place(x=900,y=10)
 
 
     movFondo1Multi1()
     movFondo1Multi2()
-
+    velocidad1()
+    velocidad2()
+    gana1()
+    gana2()
+    ganadorPrimero()
+  
     #----------ENEMIGOS DEL JUGADOR 1---------------------
     
     minivan1 = canvas1.create_image(posxal,-100,image=minivan)
@@ -1393,5 +1443,3 @@ Btcargar = tkinter.Button(v1, text="Cargar Juego Guardado", fg="white",bg="black
 
 
 v1.mainloop()
-
-
